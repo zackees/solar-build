@@ -7,6 +7,7 @@ Solar comes first. The battery buffers it, and mains takes over automatically wi
 > **Status:** Concept / research. Nothing has been purchased. See [Open engineering questions](#open-engineering-questions).
 >
 > **Candidate builds:** [BUILDS.md](BUILDS.md) has an all-in-one build and a component build for a grounded site, plus a build for this ungrounded site.
+> **Cost-optimized versions:** [BUDGET.md](BUDGET.md).
 
 ---
 
