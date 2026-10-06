@@ -166,7 +166,6 @@ Energy balance with a 1.2 kW charger:
 |---:|---|
 | 800 W | charging |
 | 1.0 kW | slow charge / near neutral |
-| 1.2 kW | ~energy neutral |
 | 1.2 kW (design max) | ~energy neutral; battery only covers spikes and charger shortfall |
 
 Expect ~10–11 A draw on the 120 V circuit. Don't design for sustained 15+ A on an unverified older branch circuit.
