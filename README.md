@@ -5,6 +5,8 @@ Design workspace for a small off-grid solar + battery system that runs one high-
 Solar comes first. The battery buffers it, and mains takes over automatically without interrupting the computer. This is **not** a whole-home backup system. It is sized for one workstation plus its monitors and network gear.
 
 > **Status:** Concept / research. Nothing has been purchased. See [Open engineering questions](#open-engineering-questions).
+>
+> **Candidate builds:** [BUILDS.md](BUILDS.md) has an all-in-one build and a component build for a grounded site, plus a build for this ungrounded site.
 
 ---
 
