@@ -1,6 +1,6 @@
 # solar-build
 
-Design workspace for a small off-grid solar + battery system that runs one high-power dual-GPU workstation.
+Design workspace for a small off-grid solar + battery system that runs one high-power AI workstation (Threadripper + one modded 96 GB GPU).
 
 Solar comes first. The battery buffers it, and mains takes over automatically without interrupting the computer. This is **not** a whole-home backup system. It is sized for one workstation plus its monitors and network gear.
 
@@ -27,7 +27,7 @@ certified isolated AC/DC charger (Class II, ~1.0–1.2 kW)
 3 kW pure-sine inverter
       │
       ▼
-dual-GPU workstation
+workstation
 ```
 
 The computer runs from the inverter **all the time**. Mains never bypasses the inverter. It only charges the DC bus. If mains drops out, the charger stops contributing and the battery keeps the inverter going, so no AC transfer event ever happens.
@@ -66,8 +66,26 @@ The workaround is to keep the old two-wire mains **galvanically isolated** from 
 
 | Parameter | Value |
 |---|---:|
-| Design peak (AC) | 1.4–1.6 kW |
+| Design max (AC, sustained or burst) | **1.2 kW** |
 | Expected average | 600–1,000 W (**needs measurement**) |
+
+### Power budget at stock settings
+
+| Component | DC power |
+|---|---:|
+| 1× modded 96 GB GPU (4090-based, 450 W; 5090-class, 575 W) | 450–575 W |
+| Threadripper (7000/9000 series) | ~350 W |
+| Motherboard, RAM, NVMe, fans, pump | ~80–120 W |
+| **DC total** | **~880–1,045 W** |
+| **AC at wall (~92% PSU)** | **~0.96–1.14 kW** ✅ |
+
+This fits under 1.2 kW at stock settings, but with little room for monitors. If measurements show it going over, cap the GPU (`nvidia-smi -pl`) or the CPU (PPT). The GPU's millisecond spikes (up to about 2× its rating) are absorbed by the 3 kW inverter and the battery, so they don't affect the 1.2 kW sizing.
+
+Confirm the card's limits with:
+
+```
+nvidia-smi --query-gpu=name,memory.total,power.default_limit,power.max_limit --format=csv
+```
 
 ### Measurements needed before purchase
 
@@ -77,9 +95,8 @@ Measure with an AC power meter:
 |---|---|
 | System idle | |
 | Normal coding/work | |
-| One GPU loaded | |
-| Both GPUs loaded | |
-| CPU + both GPUs max | |
+| GPU loaded | |
+| CPU + GPU max | |
 | PC + all monitors/peripherals | |
 | Highest short-duration load | |
 
@@ -89,10 +106,10 @@ Also check the office receptacle with a receptacle tester.
 
 ## Why 48 V (51.2 V nominal)
 
-| Bus | Battery current at ~1.6 kW AC |
+| Bus | Battery current at ~1.2 kW AC |
 |---|---:|
-| 24 V | 70–80 A |
-| 51.2 V | 34–38 A |
+| 24 V | ~55 A |
+| 51.2 V | ~26 A |
 
 The 48 V bus cuts cable current, connector heating, voltage drop, BMS stress, and inverter losses.
 
@@ -123,7 +140,7 @@ Candidate to re-evaluate: WattCycle 48 V / 100 Ah.
 | Continuous output | ~3,000 W |
 | AC output | 120 V / 60 Hz, pure sine |
 | Surge | ≥5–6 kW transient preferred |
-| Load at 1.6 kW | ≤55% of rating |
+| Load at 1.2 kW | ~40% of rating |
 | Efficiency | ≥90–93% in the relevant load range |
 
 Document the following: floating vs. bonded neutral, any internal N-G bonding/transfer relay, GFCI compatibility, and the manufacturer's protective-earth requirements. A neutral-ground bond is **not** an earth-ground conductor.
@@ -150,7 +167,7 @@ Energy balance with a 1.2 kW charger:
 | 800 W | charging |
 | 1.0 kW | slow charge / near neutral |
 | 1.2 kW | ~energy neutral |
-| 1.6 kW | battery covers ~400 W deficit |
+| 1.2 kW (design max) | ~energy neutral; battery only covers spikes and charger shortfall |
 
 Expect ~10–11 A draw on the 120 V circuit. Don't design for sustained 15+ A on an unverified older branch circuit.
 
@@ -172,9 +189,9 @@ Expect ~10–11 A draw on the 120 V circuit. Don't design for sustained 15+ A on
 | 600 W | ~7.5 h |
 | 800 W | ~5.7 h |
 | 1,000 W | ~4.6 h |
-| 1,600 W | ~2.9 h |
+| 1,200 W | ~3.8 h |
 
-With the 1.2 kW charger running at a 1.6 kW load, the battery only covers ~400 W, so it can sustain peak load for many hours. Losses and charge/discharge limits still need to be modeled.
+With the 1.2 kW charger running, the charger alone can carry the full design load. The battery mostly absorbs GPU spikes, solar dips, and mains outages, so a smaller battery (~2.5 kWh) is a viable lower-cost option. Losses and charge/discharge limits still need to be modeled.
 
 ---
 
